@@ -5,9 +5,10 @@
 # The script automatically prefixes the title with the current directory name
 # (usually the repo/project name) for easy identification across multiple terminals.
 #
-# Optional: Set CLAUDE_TITLE_PREFIX environment variable for additional custom prefix
-# Example: export CLAUDE_TITLE_PREFIX="🤖"
-#          Results in: "🤖 my-project | Your Title"
+# Optional: set CODEX_TITLE_PREFIX or CLAUDE_TITLE_PREFIX for an additional
+# custom prefix. CODEX_TITLE_PREFIX wins when both are present.
+# Example: export CODEX_TITLE_PREFIX="Codex"
+#          Results in: "Codex | my-project | Your Title"
 
 # Exit silently if no title provided (fail-safe behavior)
 if [ -z "$1" ]; then
@@ -27,11 +28,12 @@ fi
 DIR_NAME=$(basename "$PWD")
 
 # Build the final title with directory prefix and optional custom prefix
-if [ -n "$CLAUDE_TITLE_PREFIX" ]; then
+TITLE_PREFIX="${CODEX_TITLE_PREFIX:-$CLAUDE_TITLE_PREFIX}"
+if [ -n "$TITLE_PREFIX" ]; then
     # Sanitize prefix as well
-    PREFIX=$(echo "$CLAUDE_TITLE_PREFIX" | tr -d '\000-\037' | head -c 20)
+    PREFIX=$(echo "$TITLE_PREFIX" | tr -d '\000-\037' | head -c 20)
     if [ -n "$PREFIX" ]; then
-        FINAL_TITLE="${PREFIX} ${DIR_NAME} | ${TITLE}"
+        FINAL_TITLE="${PREFIX} | ${DIR_NAME} | ${TITLE}"
     else
         FINAL_TITLE="${DIR_NAME} | ${TITLE}"
     fi

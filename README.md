@@ -1,12 +1,12 @@
-# Terminal Title Skill for Claude Code
+# Terminal Title Skill for Claude Code and Codex
 
 ## What It Does
 
-Automatically updates your terminal window title to reflect the current task Claude Code is working on. Perfect for developers managing multiple Claude Code instances across different terminals.
+Automatically updates your terminal window title to reflect the current task Claude Code or Codex is working on. Perfect for developers managing multiple agent instances across different terminals.
 
 ## The Problem It Solves
 
-Running multiple Claude Code sessions? Constantly clicking between terminals trying to remember which one is handling your API integration vs database migration vs bug fix? This skill eliminates that frustration.
+Running multiple Claude Code or Codex sessions? Constantly clicking between terminals trying to remember which one is handling your API integration vs database migration vs bug fix? This skill eliminates that frustration.
 
 ## How It Works
 
@@ -70,6 +70,25 @@ Expand-Archive -Force terminal-title.skill "$env:USERPROFILE\.claude\skills\"
 
 The Windows version uses the .NET `[Console]::Title` API (Win32 `SetConsoleTitle`) rather than ANSI escape sequences, because Claude Code's Bash tool strips control bytes from subprocess stdout before they reach the host terminal. See the "Compatibility" section for details.
 
+### Manual Install (Codex + Windows PowerShell)
+
+```powershell
+# From this repository
+.\install-codex-powershell.ps1
+```
+
+The installer targets `~\.agents\skills` when that directory exists, matching this Codex install's custom-skill location. If your Codex install uses `~\.codex\skills` instead, pass it explicitly:
+
+```powershell
+.\install-codex-powershell.ps1 -InstallDir "$env:USERPROFILE\.codex\skills"
+```
+
+Smoke test:
+
+```powershell
+& "$env:USERPROFILE\.agents\skills\terminal-title\scripts\set_title.ps1" "Test: Codex PowerShell OK"
+```
+
 ### Uninstall
 
 To remove the skill completely:
@@ -105,7 +124,7 @@ This script will:
 
 ## Usage
 
-**That's it!** The skill works automatically. When you start Claude Code and give it a task, your terminal title will update.
+**That's it!** The skill works automatically. When you start Claude Code or Codex and give it a task, your terminal title will update.
 
 ### Examples
 
@@ -124,10 +143,11 @@ You can add a custom prefix to all terminal titles:
 
 ```bash
 # Add to your ~/.bashrc, ~/.zshrc, or shell config:
-export CLAUDE_TITLE_PREFIX="🤖 Claude"
+export CLAUDE_TITLE_PREFIX="Claude"
+export CODEX_TITLE_PREFIX="Codex"
 ```
 
-This produces titles like: `🤖 Claude | my-project | Build: Dashboard UI`
+This produces titles like: `Codex | my-project | Build: Dashboard UI`
 
 **Title Format:**
 - Default: `[Folder Name] | [Task Description]`
@@ -139,6 +159,7 @@ This produces titles like: `🤖 Claude | my-project | Build: Dashboard UI`
 - ✅ macOS Terminal.app + zsh (with setup-zsh.sh)
 - ✅ iTerm2 (macOS)
 - ✅ Windows Terminal + PowerShell (via the bundled `set_title.ps1`)
+- ✅ Codex on Windows PowerShell (via `install-codex-powershell.ps1`)
 
 ### Should Work (Not Extensively Tested)
 - ⚠️ Alacritty
@@ -156,7 +177,7 @@ This produces titles like: `🤖 Claude | my-project | Build: Dashboard UI`
 
 On Windows, the bash version's `printf '\033]0;...\007'` approach does **not** work when Claude Code invokes the script through its Bash tool, even though Windows Terminal itself fully supports OSC 0 title sequences. The reason is that Claude Code's Bash tool sanitizes control bytes from subprocess stdout before display, so the escape never reaches the host terminal.
 
-The Windows-specific `set_title.ps1` sidesteps this by calling `[Console]::Title = ...` (which wraps the Win32 `SetConsoleTitle` API). The hook PowerShell subprocess inherits Claude Code's console, so the title-set call hits the parent terminal directly without going through stdout.
+The Windows-specific `set_title.ps1` sidesteps this by calling `[Console]::Title = ...` (which wraps the Win32 `SetConsoleTitle` API). The hook PowerShell subprocess inherits the agent's console, so the title-set call hits the parent terminal directly without going through stdout.
 
 ### Session Behavior
 When you set a title in Terminal A and open Terminal B within 5 minutes, Terminal B will initially inherit Terminal A's title. Once Claude Code runs in Terminal B and sets a new title, each terminal will maintain its own title independently. This is by design - it prevents stale titles from appearing in new terminals while preserving titles within active sessions.
@@ -178,13 +199,13 @@ When you set a title in Terminal A and open Terminal B within 5 minutes, Termina
    # Should show: SKILL.md, scripts/, LICENSE, VERSION, CHANGELOG.md
    ```
 
-2. **Check script permissions:**
+2. **Check script permissions on macOS/Linux:**
    ```bash
    ls -la ~/.claude/skills/terminal-title/scripts/set_title.sh
    # Should show: -rwxr-xr-x (executable)
    ```
 
-3. **If not executable, fix permissions:**
+3. **If not executable on macOS/Linux, fix permissions:**
    ```bash
    chmod +x ~/.claude/skills/terminal-title/scripts/set_title.sh
    ```
@@ -202,24 +223,25 @@ Your terminal may not support ANSI escape sequences. Try:
 - **Linux:** Use GNOME Terminal, Alacritty, or Kitty
 - **Windows:** Use the bundled `set_title.ps1` (PowerShell) rather than `set_title.sh` (bash). The bash version's escape-sequence approach is filtered by Claude Code's Bash tool on Windows.
 
-### Windows: Title Not Updating?
+### Windows / Codex PowerShell: Title Not Updating?
 
 1. **Verify the PowerShell script exists:**
    ```powershell
    Test-Path "$env:USERPROFILE\.claude\skills\terminal-title\scripts\set_title.ps1"
+   Test-Path "$env:USERPROFILE\.agents\skills\terminal-title\scripts\set_title.ps1"
    ```
 2. **Test manually from Windows Terminal:**
    ```powershell
-   & "$env:USERPROFILE\.claude\skills\terminal-title\scripts\set_title.ps1" "Test: Manual"
+   & "$env:USERPROFILE\.agents\skills\terminal-title\scripts\set_title.ps1" "Test: Manual"
    # Your tab title should immediately show "<cwd> | Test: Manual"
    ```
-3. **Confirm SKILL.md is dispatching to the .ps1, not the .sh.** Open `SKILL.md` and verify the Implementation section mentions the PowerShell path.
+3. **Confirm SKILL.md is dispatching to the .ps1, not the .sh.** Open `SKILL.md` and verify the Implementation section mentions the PowerShell path for your installed skill root.
 
 ### Skill Not Triggering Automatically?
 
-- Restart Claude Code after installation
+- Restart Claude Code or Codex after installation
 - Verify SKILL.md is properly formatted (YAML front matter at top)
-- Check Claude Code version supports skills
+- Check your agent version supports skills
 
 ### Title Shows Unwanted Prefix or Suffix? (macOS Terminal.app)
 
@@ -274,4 +296,4 @@ MIT - Use freely, modify as needed, share with your team.
 
 ---
 
-Created to solve a real pain point in multi-terminal Claude Code workflows. Hope it helps your productivity too!
+Created to solve a real pain point in multi-terminal agent workflows. Hope it helps your productivity too!

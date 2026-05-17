@@ -2,9 +2,9 @@
 
 ## ✅ What Was Created
 
-**A Claude Code skill that automatically updates terminal window titles based on the current task.**
+**A Claude Code and Codex skill that automatically updates terminal window titles based on the current task.**
 
-**Current Version:** 1.1.0
+**Current Version:** 1.3.0
 
 ### Files Delivered:
 
@@ -16,7 +16,7 @@
 3. **GITHUB-README.md** - Comprehensive documentation for GitHub repository
 4. **QUICK-START.md** - Quick installation and testing guide
 5. **PROJECT-SUMMARY.md** - This file, project overview and strategy
-6. **linkedin-post.md** - Professional LinkedIn announcement post
+6. **install-codex-powershell.ps1** - Native Windows PowerShell installer for Codex
 
 ## 📊 Research Findings
 
@@ -133,6 +133,12 @@ claude-code install terminal-title.skill
 - ✅ Comprehensive troubleshooting documentation
 - ✅ Explicit task switching guidelines
 - ✅ Common mistakes section with examples
+
+**v1.3.0 Improvements (Completed):**
+- ✅ Codex wording in SKILL.md and docs
+- ✅ Windows PowerShell installer for Codex
+- ✅ `CODEX_TITLE_PREFIX` support, while preserving `CLAUDE_TITLE_PREFIX`
+- ✅ Bundled `set_title.ps1` in the distributable skill package
 - ✅ LICENSE, VERSION, and CHANGELOG.md files
 
 **Future Enhancements (Based on User Feedback):**
@@ -153,6 +159,12 @@ claude-code install terminal-title.skill
 - Explicit task switching examples
 - Common mistakes guide
 
+**v1.3.0 (2026-05-16):**
+- Added Codex support for Windows PowerShell installs
+- Added `install-codex-powershell.ps1`
+- Added `CODEX_TITLE_PREFIX`
+- Updated docs and package contents for `set_title.ps1`
+
 **v1.0.0 (2025-01-07):**
 - Initial release
 - Basic terminal title update functionality
@@ -167,7 +179,7 @@ All deliverables are in the project directory:
 - GITHUB-README.md
 - QUICK-START.md
 - PROJECT-SUMMARY.md
-- linkedin-post.md
+- install-codex-powershell.ps1
 
 ## 💡 Marketing Angle
 

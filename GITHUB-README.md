@@ -1,15 +1,15 @@
-# Terminal Title Skill for Claude Code
+# Terminal Title Skill for Claude Code and Codex
 
-Automatically update terminal window titles based on your current Claude Code task. Stop playing "which terminal is which?" with multiple AI coding sessions.
+Automatically update terminal window titles based on your current Claude Code or Codex task. Stop playing "which terminal is which?" with multiple AI coding sessions.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-![Version](https://img.shields.io/badge/version-1.1.0-green)
+![Version](https://img.shields.io/badge/version-1.3.0-green)
 ![Size](https://img.shields.io/badge/size-~2KB-blue)
 ![Platform](https://img.shields.io/badge/platform-macOS%20%7C%20Linux-lightgrey)
 
 ## Why This Exists
 
-When running multiple Claude Code instances, terminal windows all look the same. You waste time clicking between tabs, trying to remember which session is handling what task.
+When running multiple Claude Code or Codex instances, terminal windows all look the same. You waste time clicking between tabs, trying to remember which session is handling what task.
 
 This skill solves that by automatically updating your terminal title to reflect the current high-level task:
 
@@ -55,6 +55,13 @@ The installer will:
 claude-code install terminal-title.skill
 ```
 
+**Codex + Windows PowerShell:**
+```powershell
+.\install-codex-powershell.ps1
+```
+
+The PowerShell installer targets `~\.agents\skills` when present, matching Codex custom-skill installs on Windows. Use `-InstallDir "$env:USERPROFILE\.codex\skills"` if your Codex build loads custom skills directly from `~\.codex\skills`.
+
 **Manual Install:**
 ```bash
 mkdir -p ~/.claude/skills
@@ -80,7 +87,7 @@ chmod +x uninstall.sh
 
 ## Usage
 
-That's it! The skill works automatically when you use Claude Code.
+That's it! The skill works automatically when you use Claude Code or Codex.
 
 ### Examples
 
@@ -97,10 +104,11 @@ Add a custom prefix to all terminal titles:
 
 ```bash
 # Add to your ~/.bashrc, ~/.zshrc, or shell config:
-export CLAUDE_TITLE_PREFIX="🤖 Claude"
+export CLAUDE_TITLE_PREFIX="Claude"
+export CODEX_TITLE_PREFIX="Codex"
 ```
 
-**Result:** `🤖 Claude | Build: Dashboard UI`
+**Result:** `Codex | my-project | Build: Dashboard UI`
 
 This is perfect for:
 - Distinguishing Claude terminals from other work
@@ -109,7 +117,7 @@ This is perfect for:
 
 ## How It Works
 
-1. You start Claude Code and give it a prompt
+1. You start Claude Code or Codex and give it a prompt
 2. The skill analyzes your request and extracts the high-level task
 3. It generates a concise title (max 40 characters)
 4. Your terminal window title updates automatically
@@ -120,6 +128,8 @@ This is perfect for:
 ### Fully Tested & Working ✅
 - macOS Terminal.app + zsh (with setup-zsh.sh)
 - iTerm2 (macOS)
+- Windows Terminal + PowerShell
+- Codex on Windows PowerShell
 
 ### Should Work (Community Testing Needed) ⚠️
 - Alacritty, Kitty
@@ -128,7 +138,7 @@ This is perfect for:
 
 ### Known Limitations ❌
 - Plain bash without precmd support (titles won't persist)
-- Windows native terminals (CMD, PowerShell) - limited ANSI support
+- CMD without PowerShell script invocation
 - Very old terminal emulators
 
 ### Session Behavior
@@ -140,18 +150,19 @@ When opening a new terminal within 5 minutes of setting a title, it may initiall
 
 ```
 terminal-title/
-├── SKILL.md                 # Skill instructions for Claude Code
+├── SKILL.md                 # Skill instructions for Claude Code and Codex
 ├── LICENSE                  # MIT License
 ├── VERSION                  # Semantic version number
 ├── CHANGELOG.md             # Version history and changes
 └── scripts/
-    └── set_title.sh         # Terminal title update script
+    ├── set_title.sh         # POSIX terminal title update script
+    └── set_title.ps1        # Windows PowerShell title update script
 ```
 
 ### How the Skill Triggers
 
 The skill automatically activates:
-- At the start of every new Claude Code session (first prompt)
+- At the start of every new Claude Code or Codex session (first prompt)
 - When switching to a substantially different task (e.g., frontend → backend, debugging → new feature)
 
 **Triggers on:**
@@ -190,6 +201,11 @@ cd ~/.claude/skills/terminal-title/
 bash scripts/set_title.sh "Test: It Works!"
 ```
 
+**Test Codex on Windows PowerShell:**
+```powershell
+& "$env:USERPROFILE\.agents\skills\terminal-title\scripts\set_title.ps1" "Test: It Works!"
+```
+
 **Verify permissions:**
 ```bash
 chmod +x ~/.claude/skills/terminal-title/scripts/set_title.sh
@@ -198,8 +214,8 @@ chmod +x ~/.claude/skills/terminal-title/scripts/set_title.sh
 ### Still having issues?
 
 1. Ensure your terminal supports ANSI escape sequences
-2. Restart Claude Code after installation
-3. Check Claude Code logs for errors
+2. Restart Claude Code or Codex after installation
+3. Check the agent logs for errors
 4. [Open an issue](../../issues) with details
 
 ## Contributing
@@ -211,6 +227,7 @@ chmod +x ~/.claude/skills/terminal-title/scripts/set_title.sh
 **Platform Testing:**
 - Linux users: Does it work? Share your setup!
 - Windows + WSL: Title persistence working?
+- Codex on other terminals: Which skill directory does your install use?
 - Other terminal emulators: Compatibility reports needed
 
 **Shell Support:**
@@ -234,10 +251,10 @@ All contributions appreciated, no matter how small!
 
 ## Future Enhancements
 
-**Recently Added (v1.1.0):**
-- ✅ Custom title prefixes via `CLAUDE_TITLE_PREFIX`
-- ✅ Enhanced error handling and terminal detection
-- ✅ Better documentation with troubleshooting guide
+**Recently Added (v1.3.0):**
+- ✅ Codex support on Windows PowerShell
+- ✅ `CODEX_TITLE_PREFIX` support
+- ✅ Bundled `set_title.ps1` in the skill package
 
 **Considering based on community feedback:**
 - [ ] Custom title format templates

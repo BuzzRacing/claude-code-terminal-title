@@ -19,13 +19,24 @@ unzip terminal-title.skill -d ~/.claude/skills/
 chmod +x ~/.claude/skills/terminal-title/scripts/set_title.sh
 ```
 
+### Option 3: Codex on Windows PowerShell
+
+```powershell
+.\install-codex-powershell.ps1
+```
+
 ## Quick Test
 
 ```bash
 # Test the script directly
 bash ~/.claude/skills/terminal-title/scripts/set_title.sh "Test: It Works!"
 
-# Or use Claude Code - give it any task and watch your terminal title update!
+# Or use Claude Code/Codex - give it any task and watch your terminal title update.
+```
+
+```powershell
+# Codex on Windows PowerShell
+& "$env:USERPROFILE\.agents\skills\terminal-title\scripts\set_title.ps1" "Test: It Works!"
 ```
 
 ## macOS Terminal.app Setup
